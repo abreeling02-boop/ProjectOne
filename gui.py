@@ -355,7 +355,7 @@ class Ui_Grade_Average(object):
         self.line_Bar_Seperator.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_Bar_Seperator.setObjectName("line_Bar_Seperator")
         self.label_Feedback_Submit = QtWidgets.QLabel(parent=self.centralwidget)
-        self.label_Feedback_Submit.setGeometry(QtCore.QRect(130, 290, 61, 16))
+        self.label_Feedback_Submit.setGeometry(QtCore.QRect(130, 290, 61, 10))
         palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(0, 0, 0))
         brush.setStyle(QtCore.Qt.BrushStyle.SolidPattern)
