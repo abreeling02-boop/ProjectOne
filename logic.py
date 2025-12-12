@@ -1,64 +1,42 @@
 from PyQt6.QtWidgets import *
-from gui import *
 from gui import Ui_Grade_Average
 import csv
 
-class Student:
-    def __init__(self, name, scores):
-        self.name = name
-        self.scores = scores
-
-    def best_score(self):
-        return max(self.scores)
-
-    def attempts(self):
-        return len(self.scores)
-
-class Logic(QMainWindow):
+class Logic(QMainWindow, Ui_Grade_Average):
     def __init__(self):
-            QMainWindow.__init__(self)
-            self.ui = Ui_Grade_Average()
-            self.ui.setupUi(self)
-            self.setFixedSize(self.size())
-            self.students = []
-            self.awaiting_scores = False
-            self.current_name = ""
-            self.max_attempts = 4
-            self.hide_scores()
-            self.clear_score_feedback()
-            self.ui.label_Feedback_Submit.setText("")
-            self.ui.button_Submit.clicked.connect(self.submit_clicked)
+        super().__init__()
+        self.setupUi(self)
 
+    def hide_feedback(self):
+        self.label_Feedback_Submit.setVisible(False)
+        self.label_Feedback_Score_One.setVisible(False)
+        self.label_Feedback_Score_Two.setVisible(False)
+        self.label_Feedback_Score_Three.setVisible(False)
+        self.label_Feedback_Score_Four.setVisible(False)
 
-    def submit_clicked(self):
-        pass
+        self.label_Feedback_Submit.setText("")
+        self.label_Feedback_Score_One.setText("")
+        self.label_Feedback_Score_Two.setText("")
+        self.label_Feedback_Score_Three.setText("")
+        self.label_Feedback_Score_Four.setText("")
 
-    def get_name(self):
-        pass
+        def hide_scores(self):
+            self.label_Score_One.setVisible(False)
+            self.label_Score_Two.setVisible(False)
+            self.label_Score_Three.setVisible(False)
+            self.label_Score_Four.setVisible(False)
 
-    def get_attempts(self):
-        pass
+            self.line_Score_One.setVisible(False)
+            self.line_Score_Two.setVisible(False)
+            self.line_Score_Three.setVisible(False)
+            self.line_Score_Four.setVisible(False)
 
-    def get_scores(self, attempts):
-        pass
+            self.line_Score_One.setText("")
+            self.line_Score_Two.setText("")
+            self.line_Score_Three.setText("")
+            self.line_Score_Four.setText("")
 
-    def hide_scores(self):
-        pass
-
-    def show_scores(self, attempts):
-        pass
-
-    def clear_inputs(self):
-        pass
-
-    def clear_score_feedback(self):
-        pass
-
-    def set_status(self, message):
-        pass
-
-    def show_error(self, message):
-        pass
-
-    def save_to_csv(self):
-        pass
+            def identify_scores(self):
+                self.hide_feedback()
+                self.hide_scores()
+                self.button_Submit.setEnabled(False)
