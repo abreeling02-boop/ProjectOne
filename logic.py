@@ -101,6 +101,8 @@ class Logic(QMainWindow, Ui_Grade_Average):
         attempts_text = self.line_Number_Attempts.text().strip()
 
         if name == "" or attempts_text == "":
+            self.label_Feedback_Submit.setVisible(True)
+            self.label_Feedback_Submit.setText("Enter name and attempts")
             return
 
         try:
@@ -114,97 +116,64 @@ class Logic(QMainWindow, Ui_Grade_Average):
             self.label_Feedback_Submit.setVisible(True)
             self.label_Feedback_Submit.setText("Attempts must be 1-4")
             return
-
+        score_lines = [self.line_Score_One, self.line_Score_Two,self.line_Score_Three, self.line_Score_Four]
+        feedback_labels = [self.label_Feedback_Score_One, self.label_Feedback_Score_Two, self.label_Feedback_Score_Three, self.label_Feedback_Score_Four]
         scores = []
-        try:
-            s1_text = self.line_Score_One.text().strip()
-            if s1_text == "":
-                raise ValueError
-            s1 = int(s1_text)
-            scores.append(s1)
+        has_error = False
 
-            if attempts >= 2:
-                s2_text = self.line_Score_Two.text().strip()
-                if s2_text == "":
-                    raise ValueError
-                s2 = int(s2_text)
-                scores.append(s2)
+        for i in range(attempts):
+            text = score_lines[i].text().strip()
 
-            if attempts >= 3:
-                s3_text = self.line_Score_Three.text().strip()
-                if s3_text == "":
-                    raise ValueError
-                s3 = int(s3_text)
-                scores.append(s3)
+            if text == "":
+                feedback_labels[i].setVisible(True)
+                feedback_labels[i].setText("Required")
+                has_error = True
+                scores.append(None)
+                continue
 
-            if attempts >= 4:
-                s4_text = self.line_Score_Four.text().strip()
-                if s4_text == "":
-                    raise ValueError
-                s4 = int(s4_text)
-                scores.append(s4)
-        except:
+            try:
+                value = int(text)
+            except:
+                feedback_labels[i].setVisible(True)
+                feedback_labels[i].setText("Enter integer")
+                has_error = True
+                scores.append(None)
+                continue
+
+            if value < 0 or value > 100:
+                feedback_labels[i].setVisible(True)
+                feedback_labels[i].setText("0-100")
+                has_error = True
+                scores.append(None)
+                continue
+
+            scores.append(value)
+
+        if has_error:
             self.label_Feedback_Submit.setVisible(True)
-            self.label_Feedback_Submit.setText("Enter numeric values")
-            if attempts >= 1:
-                self.label_Feedback_Score_One.setVisible(True)
-                self.label_Feedback_Score_One.setText("Required")
-            if attempts >= 2:
-                self.label_Feedback_Score_Two.setVisible(True)
-                self.label_Feedback_Score_Two.setText("Required")
-            if attempts >= 3:
-                self.label_Feedback_Score_Three.setVisible(True)
-                self.label_Feedback_Score_Three.setText("Required")
-            if attempts >= 4:
-                self.label_Feedback_Score_Four.setVisible(True)
-                self.label_Feedback_Score_Four.setText("Required")
+            self.label_Feedback_Submit.setText("Fix highlighted score(s)")
             return
 
-        for i in range(len(scores)):
-            if scores[i] < 0 or scores[i] > 100:
-                self.label_Feedback_Submit.setVisible(True)
-                self.label_Feedback_Submit.setText("Scores must be 0-100")
-                if attempts >= 1:
-                    self.label_Feedback_Score_One.setVisible(True)
-                    self.label_Feedback_Score_One.setText("0-100")
-                if attempts >= 2:
-                    self.label_Feedback_Score_Two.setVisible(True)
-                    self.label_Feedback_Score_Two.setText("0-100")
-                if attempts >= 3:
-                    self.label_Feedback_Score_Three.setVisible(True)
-                    self.label_Feedback_Score_Three.setText("0-100")
-                if attempts >= 4:
-                    self.label_Feedback_Score_Four.setVisible(True)
-                    self.label_Feedback_Score_Four.setText("0-100")
-                return
-
-        total = 0
-        for score in scores:
-            total += score
-        average = total / attempts
+        average = sum(scores) / attempts
 
         self.label_Feedback_Submit.setVisible(True)
-        self.label_Feedback_Submit.setText(f"{name} avg: {average:.2f}")
+        self.label_Feedback_Submit.setText("Submitted")
 
         try:
             self.setup_csv_file()
-            score1 = self.line_Score_One.text().strip()
-            score2 = ""
-            score3 = ""
-            score4 = ""
 
-            if attempts >= 2:
-                score2 = self.line_Score_Two.text().strip()
-            if attempts >= 3:
-                score3 = self.line_Score_Three.text().strip()
-            if attempts >= 4:
-                score4 = self.line_Score_Four.text().strip()
+            score_texts = []
+            for i in range(4):
+                if i < attempts:
+                    score_texts.append(score_lines[i].text().strip())
+                else:
+                    score_texts.append("")
 
+            score1, score2, score3, score4 = score_texts
             row = [name, attempts_text, score1, score2, score3, score4, f"{average:.2f}"]
 
-            file = open(self.csv_file, "a", newline="")
-            writer = csv.writer(file)
-            writer.writerow(row)
-            file.close()
+            with open(self.csv_file, "a", newline="") as file:
+                writer = csv.writer(file)
+                writer.writerow(row)
         except:
-            return
+            pass
