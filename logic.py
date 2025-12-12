@@ -6,6 +6,13 @@ class Logic(QMainWindow, Ui_Grade_Average):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.csv_file = "grades.csv"
+        self.hide_scores()
+        self.hide_feedback()
+        self.button_Submit.setEnabled(False)
+        self.line_Student_Name.textChanged.connect(self.identify_scores)
+        self.line_Number_Attempts.textChanged.connect(self.identify_scores)
+        self.button_Submit.clicked.connect(self.submit_button)
 
     def hide_feedback(self):
         self.label_Feedback_Submit.setVisible(False)
