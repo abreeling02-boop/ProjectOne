@@ -5,18 +5,30 @@ import csv
 
 class Student:
     def __init__(self, name, scores):
-        pass
+        self.name = name
+        self.scores = scores
 
     def best_score(self):
-        pass
+        return max(self.scores)
 
     def attempts(self):
-        pass
-
+        return len(self.scores)
 
 class Logic(QMainWindow):
     def __init__(self):
-        super().__init__()
+            QMainWindow.__init__(self)
+            self.ui = Ui_Grade_Average()
+            self.ui.setupUi(self)
+            self.setFixedSize(self.size())
+            self.students = []
+            self.awaiting_scores = False
+            self.current_name = ""
+            self.max_attempts = 4
+            self.hide_scores()
+            self.clear_score_feedback()
+            self.ui.label_Feedback_Submit.setText("")
+            self.ui.button_Submit.clicked.connect(self.submit_clicked)
+
 
     def submit_clicked(self):
         pass
